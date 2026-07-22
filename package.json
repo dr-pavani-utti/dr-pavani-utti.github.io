@@ -15,5 +15,10 @@
     "@astrojs/tailwind": "^6.0.2",
     "astro": "^7.0.9",
     "tailwindcss": "^3.4.19"
+  },
+  "overrides": {
+    "@astrojs/tailwind": {
+      "astro": "$astro"
+    }
   }
 }
