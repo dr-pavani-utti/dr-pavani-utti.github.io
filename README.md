@@ -1,43 +1,30 @@
-# Astro Starter Kit: Minimal
+# Dr. Pavani Utti – Portfolio
+
+Astro + Tailwind site, deployed to GitHub Pages by `.github/workflows/deploy.yml` on every push to `main`.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev       # http://localhost:4321/portfolio/
+npm run build     # dist/
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Base path
 
-## 🚀 Project Structure
+`astro.config.mjs` derives the base from the repo name in `GITHUB_REPOSITORY`: a repo named
+`dr-pavani-utti.github.io` is served at the domain root (`/`), any other repo at `/<repo>/`.
+`BASE_PATH=/ npm run build` forces it locally. Always build URLs with `asset()` / `absolute()`
+from `src/site.ts`, never a hard-coded `/portfolio/`.
 
-Inside of your Astro project, you'll see the following folders and files:
+## SEO
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+- `src/layouts/Layout.astro`: title, description, canonical, favicons, Open Graph/Twitter, JSON-LD.
+- `src/pages/index.astro`: page content plus `WebSite`, `ProfilePage`, `Person` and `WebApplication` structured data.
+- `src/pages/sitemap.xml.ts`, `src/pages/robots.txt.ts`, `src/pages/site.webmanifest.ts`: generated at build time.
+  `robots.txt` also lists the NEET PG / NEET SS explorer sitemaps.
+- `src/pages/[legacy]/index.astro`: when served from the root, `/portfolio/` redirects to `/`.
+- `public/google2cc8027b9bf0402d.html`: Google Search Console verification (keep).
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Google reads the site name, favicon and `robots.txt` only from the domain root
+(`https://dr-pavani-utti.github.io/`). While the site lives at `/portfolio/`, search results show
+“GitHub Pages” and a globe icon. Serving it from the root requires the repo to be named
+`dr-pavani-utti.github.io`.

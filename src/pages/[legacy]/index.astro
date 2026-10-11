@@ -1,0 +1,24 @@
+---
+// When served from the domain root, keep the old https://…/portfolio/ URL
+// (already indexed by Google) working: a 0-second meta refresh plus canonical
+// is treated by Google as a permanent redirect.
+import { SITE_URL } from '../../site';
+
+export function getStaticPaths() {
+  return import.meta.env.BASE_URL.replace(/\/$/, '') === '' ? [{ params: { legacy: 'portfolio' } }] : [];
+}
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Dr. Pavani Utti | General Surgeon</title>
+		<link rel="canonical" href={SITE_URL} />
+		<meta name="robots" content="noindex" />
+		<meta http-equiv="refresh" content={`0; url=${SITE_URL}`} />
+	</head>
+	<body>
+		<a href={SITE_URL}>Dr. Pavani Utti</a>
+	</body>
+</html>
