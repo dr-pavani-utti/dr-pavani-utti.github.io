@@ -111,308 +111,380 @@ const jsonLd = {
     })),
   ],
 };
+
+// Lucide icon bodies (24×24 viewBox), inlined into <svg> elements via set:html.
+const icons: Record<string, string> = {
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  activity: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  award: '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  calendar: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  briefcase: '<path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/>',
+  cap: '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  arrow: '<path d="M7 17 17 7"/><path d="M7 7h10v10"/>',
+  plus: '<path d="M12 5v14"/><path d="M5 12h14"/>',
+  cross: '<path d="M16 3H8v5H3v8h5v5h8v-5h5V8h-5V3z"/>',
+};
+
+const nav = [
+  { href: '#about', label: 'About' },
+  { href: '#journey', label: 'Journey' },
+  { href: '#awards', label: 'Awards' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#faq', label: 'FAQ' },
+];
+
+const stats = [
+  { icon: 'users', count: 1000, suffix: '+', label: 'Patients served' },
+  { icon: 'activity', count: 200, suffix: '+', label: 'Surgeries' },
+  { icon: 'award', count: 3, suffix: '+ yrs', label: 'Surgical experience' },
+  { icon: 'clock', text: '24/7', label: 'Patient care' },
+];
+
+const focus = ['General Surgery', 'Emergency Surgery', 'Surgical Patient Care', 'BMCRI · Bengaluru', 'Gold Medalist', 'Operating Theatre', 'Ward & OPD Care', 'NEET PG & SS Tools'];
+
+const journey = [
+  {
+    id: 'experience',
+    when: 'Sep 2023 – Oct 2026',
+    kind: 'Experience',
+    title: 'General Surgery Resident',
+    org: 'Bangalore Medical College and Research Institute',
+    detail: 'Postgraduate Degree, General Surgery Residency Program (Completed). Outpatient clinics, wards, operating theatres and round-the-clock emergency duty.',
+    meta: ['3 yrs 2 mos', 'Bengaluru, Karnataka, India', 'Full-time · On-site'],
+    logo: { src: '/icons/bmcri-logo.png', alt: 'Bangalore Medical College and Research Institute (BMCRI) logo' },
+  },
+  {
+    id: undefined,
+    when: 'Mar 2021',
+    kind: 'Honors',
+    title: 'Two university gold medals',
+    org: 'NTR University of Health Sciences',
+    detail: 'Gold Medal in General Surgery and Gold Medal in Obstetrics & Gynaecology.',
+    meta: [],
+    logo: undefined,
+  },
+  {
+    id: 'education',
+    when: 'Aug 2016 – Jun 2021',
+    kind: 'Education',
+    title: 'Bachelor of Medicine, Bachelor of Surgery (MBBS)',
+    org: 'NTR University of Health Sciences',
+    detail: 'Undergraduate medical degree, Andhra Pradesh.',
+    meta: [],
+    logo: { src: '/icons/ntr-logo.png', alt: 'NTR University of Health Sciences logo' },
+  },
+];
+
+const awards = [
+  { mark: 'GS', title: 'Gold Medal in General Surgery' },
+  { mark: 'OBG', title: 'Gold Medal in Obstetrics & Gynaecology' },
+];
+
+// ECG trace: flat baseline with a P-QRS-T complex every 360 units.
+const beat = (x: number) => `L${x} 60 l14 -7 l12 7 l10 0 l6 -48 l9 86 l7 -50 l9 12 l16 0 l18 -14 l18 14`;
+const ecgPath = `M0 60 ${[150, 510, 870, 1230].map(beat).join(' ')} L1440 60`;
+const barHeights = [38, 62, 48, 80, 56, 92, 70];
 ---
 
 <Layout title={title} description={description} jsonLd={jsonLd}>
-  <header class="bg-white/70 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-10">
-    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-      <a href={asset('/')} aria-label="Dr. Pavani Utti – Home">
-        <img src={asset('/icons/caduceus-icon.png')} alt="" width="32" height="32" class="h-8 w-auto mix-blend-multiply" />
+  <header class="site-header fixed inset-x-0 top-0 z-30">
+    <div class="scroll-progress absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-teal-500 via-sky-cap to-gold"></div>
+    <div class="max-w-6xl mx-auto px-5 md:px-8 h-16 md:h-20 flex items-center justify-between gap-6">
+      <a href={asset('/')} class="flex items-center gap-3 group" aria-label="Dr. Pavani Utti – Home">
+        <span class="grid place-items-center w-10 h-10 rounded-full bg-white shadow-sm ring-1 ring-ink/5 transition-transform duration-500 group-hover:rotate-[360deg]">
+          <img src={asset('/icons/caduceus-icon.png')} alt="" width="24" height="24" class="h-6 w-auto mix-blend-multiply" />
+        </span>
+        <span class="font-display text-lg font-semibold tracking-tight">Dr. Pavani Utti</span>
       </a>
-      <nav class="hidden md:flex gap-6 text-sm font-medium text-slate-600" aria-label="Sections">
-        <a href="#about" class="hover:text-teal-600 transition-colors">About</a>
-        <a href="#experience" class="hover:text-teal-600 transition-colors">Experience</a>
-        <a href="#education" class="hover:text-teal-600 transition-colors">Education</a>
-        <a href="#awards" class="hover:text-teal-600 transition-colors">Awards</a>
-        <a href="#projects" class="hover:text-teal-600 transition-colors">Projects</a>
-        <a href="#faq" class="hover:text-teal-600 transition-colors">FAQ</a>
+      <nav class="hidden md:flex items-center text-sm font-medium text-ink/60" aria-label="Sections" data-nav>
+        {nav.map((n) => <a href={n.href} class="nav-link px-3 py-2 hover:text-ink transition-colors">{n.label}</a>)}
       </nav>
-      <a href={LINKEDIN} target="_blank" rel="noopener noreferrer me" class="opacity-80 hover:opacity-100 transition-opacity" aria-label="Dr. Pavani Utti on LinkedIn">
-        <img src={asset('/icons/linkedin-icon.png')} alt="LinkedIn" width="24" height="24" class="w-6 h-6 object-contain mix-blend-multiply" />
-      </a>
+      <div class="flex items-center gap-2">
+        <a href={LINKEDIN} target="_blank" rel="noopener noreferrer me" data-magnetic class="btn hidden sm:inline-flex items-center gap-2 rounded-full bg-ink text-white text-sm font-medium pl-3 pr-4 py-2 hover:shadow-lg hover:shadow-ink/20" aria-label="Dr. Pavani Utti on LinkedIn">
+          <img src={asset('/icons/linkedin-icon.png')} alt="" width="18" height="18" class="w-[18px] h-[18px] rounded-sm bg-white p-px" />
+          Connect
+        </a>
+        <button type="button" class="md:hidden grid place-items-center w-10 h-10 rounded-full bg-white shadow-sm ring-1 ring-ink/10" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-button>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10" /></svg>
+        </button>
+      </div>
     </div>
+    <nav id="mobile-menu" class="mobile-menu md:hidden absolute inset-x-4 top-[4.5rem] rounded-3xl bg-white/95 backdrop-blur-xl ring-1 ring-ink/10 shadow-xl p-3 grid" aria-label="Sections (mobile)" data-menu data-nav>
+      {nav.map((n) => <a href={n.href} class="nav-link px-4 py-3 rounded-2xl text-ink/70 hover:bg-white">{n.label}</a>)}
+      <a href={LINKEDIN} target="_blank" rel="noopener noreferrer me" class="px-4 py-3 rounded-2xl font-medium text-teal-700 hover:bg-white">LinkedIn ↗</a>
+    </nav>
   </header>
 
-  <main class="max-w-4xl mx-auto px-6 py-12 md:py-20 space-y-24">
-    <!-- Hero Section -->
-    <section id="about" class="scroll-mt-24 flex flex-col-reverse md:flex-row items-center justify-between gap-12 pt-8">
-      <div class="flex-1 space-y-6 text-center md:text-left">
-        <div class="space-y-2">
-          <h1 class="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Dr. Pavani Utti</h1>
-          <p class="text-xl md:text-2xl text-teal-600 font-medium">General Surgeon · Bengaluru, India</p>
+  <main>
+    <!-- Hero -->
+    <section id="about" class="relative scroll-mt-24 min-h-[100svh] flex flex-col justify-center pt-28 pb-16 md:pt-32">
+      <div class="max-w-6xl mx-auto w-full px-5 md:px-8 grid md:grid-cols-[1.15fr_0.85fr] items-center gap-14 md:gap-10">
+        <div class="text-center md:text-left">
+          <p class="fade-up inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-teal-800" style="--d:.1s">
+            <span class="pulse-dot w-2 h-2 rounded-full bg-teal-500"></span>
+            Residency completed · Oct 2026
+          </p>
+          <h1 class="font-display mt-6 text-[clamp(3rem,9vw,6.5rem)] leading-[0.95] font-semibold tracking-tight">
+            <span class="word"><span class="italic font-normal text-teal-700" style="--d:.2s">Dr.</span></span>{' '}
+            <span class="word"><span style="--d:.32s">Pavani</span></span>{' '}
+            <span class="word"><span style="--d:.44s">Utti</span></span>
+          </h1>
+          <p class="fade-up mt-5 font-display italic text-2xl md:text-3xl text-ink/70" style="--d:.7s">General Surgeon · Bengaluru, India</p>
+          <p class="fade-up mt-6 text-lg leading-relaxed text-ink/65 max-w-xl mx-auto md:mx-0" style="--d:.85s">
+            Dr. Pavani Utti is a General Surgeon trained at Bangalore Medical College and Research Institute (BMCRI), committed to compassionate patient care, surgical excellence, and continuous medical learning.
+          </p>
+          <div class="fade-up mt-9 flex flex-wrap justify-center md:justify-start gap-3" style="--d:1s">
+            <a href="#journey" data-magnetic class="btn btn-primary inline-flex items-center gap-2 rounded-full bg-teal-600 text-white font-medium px-6 py-3.5 shadow-lg shadow-teal-600/25 hover:bg-teal-700">
+              Explore her journey
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rotate-[135deg]"><Fragment set:html={icons.arrow} /></svg>
+            </a>
+            <a href={LINKEDIN} target="_blank" rel="noopener noreferrer me" data-magnetic class="btn inline-flex items-center gap-2 rounded-full glass font-medium px-6 py-3.5 hover:bg-white">
+              View LinkedIn
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={icons.arrow} /></svg>
+            </a>
+          </div>
         </div>
-        
-        <p class="text-slate-600 leading-relaxed text-lg max-w-2xl">
-          Dr. Pavani Utti is a General Surgeon trained at Bangalore Medical College and Research Institute (BMCRI), committed to compassionate patient care, surgical excellence, and continuous medical learning.
-        </p>
 
-        <!-- Stats -->
-        <div class="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
-          <!-- Patients Served -->
-          <div class="bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-4 shadow-sm flex items-center gap-4 w-full sm:w-auto">
-            <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div class="fade-up relative mx-auto order-first md:order-none" style="--d:.4s">
+          <div class="portrait relative" data-tilt>
+            <div class="absolute -inset-8 rounded-full bg-teal-300/30 blur-3xl"></div>
+            <div class="portrait-ring relative p-[3px] rounded-t-full rounded-b-[2.75rem] shadow-2xl shadow-ink/25">
+              <div class="rounded-t-full rounded-b-[2.6rem] overflow-hidden bg-white p-1.5">
+                <img
+                  src={asset('/icons/profile-pic.png')}
+                  alt="Dr. Pavani Utti, General Surgeon, Bengaluru"
+                  width="320"
+                  height="420"
+                  class="w-52 h-64 sm:w-64 sm:h-[21rem] md:w-80 md:h-[26rem] object-cover object-[50%_20%] rounded-t-full rounded-b-[2.3rem]"
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              </div>
             </div>
-            <div class="flex flex-col text-left">
-              <span class="text-2xl font-bold text-slate-800">1000+</span>
-              <span class="text-sm text-slate-500 font-medium">Patients Served</span>
+            <div class="float absolute -left-10 md:-left-16 bottom-6 md:bottom-auto md:top-16 glass rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3" style="--d:-1s">
+              <span class="medal relative grid place-items-center w-9 h-9 rounded-full text-[10px] font-bold text-amber-900">2×</span>
+              <span class="text-left leading-tight"><span class="block text-sm font-semibold">Gold Medalist</span><span class="block text-xs text-ink/55">NTRUHS · 2021</span></span>
             </div>
-          </div>
-
-          <!-- Surgeries -->
-          <div class="bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-4 shadow-sm flex items-center gap-4 w-full sm:w-auto">
-            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            </div>
-            <div class="flex flex-col text-left">
-              <span class="text-2xl font-bold text-slate-800">200+</span>
-              <span class="text-sm text-slate-500 font-medium">Surgeries</span>
-            </div>
-          </div>
-
-          <!-- Experience -->
-          <div class="bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-4 shadow-sm flex items-center gap-4 w-full sm:w-auto">
-            <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
-            </div>
-            <div class="flex flex-col text-left">
-              <span class="text-2xl font-bold text-slate-800">3+ Years</span>
-              <span class="text-sm text-slate-500 font-medium">of experience</span>
-            </div>
-          </div>
-
-          <!-- Patient Care -->
-          <div class="bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-4 shadow-sm flex items-center gap-4 w-full sm:w-auto">
-            <div class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            </div>
-            <div class="flex flex-col text-left">
-              <span class="text-2xl font-bold text-slate-800">24/7</span>
-              <span class="text-sm text-slate-500 font-medium">Patient Care</span>
+            <div class="float absolute -right-10 md:-right-12 -bottom-12 md:bottom-20 glass rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3" style="--d:-3s">
+              <span class="grid place-items-center w-9 h-9 rounded-full bg-teal-50 text-teal-600">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={icons.activity} /></svg>
+              </span>
+              <span class="text-left leading-tight"><span class="block text-sm font-semibold">General Surgery</span><span class="block text-xs text-ink/55">BMCRI · Bengaluru</span></span>
             </div>
           </div>
         </div>
       </div>
-      
-      <div class="flex-shrink-0 relative group">
-        <div class="absolute inset-0 bg-teal-100 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
-        <img 
-          src={asset('/icons/profile-pic.png')} 
-          alt="Dr. Pavani Utti, General Surgeon, Bengaluru" 
-          width="256"
-          height="256"
-          class="relative w-48 h-48 md:w-64 md:h-64 rounded-full object-cover border-4 border-white shadow-xl"
-          loading="eager"
-          fetchpriority="high"
-        />
-      </div>
+
+      <svg class="absolute inset-x-0 bottom-6 w-full h-24 md:h-28 text-teal-600 pointer-events-none" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+        <path class="ecg-base" d={ecgPath} pathLength="1000" fill="none" stroke="currentColor" stroke-opacity=".18" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+        <path class="ecg-run" d={ecgPath} pathLength="1000" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+      </svg>
     </section>
 
-    <!-- Biography Section -->
-    <section id="bio" class="scroll-mt-24 space-y-6">
-      <h2 class="text-2xl font-bold text-slate-900">About Dr. Pavani Utti</h2>
-      <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-200/60 shadow-sm space-y-4 text-slate-600 leading-relaxed">
-        <p>
-          <strong class="text-slate-800">Dr. Pavani Utti</strong> is a General Surgeon based in Bengaluru, Karnataka. She completed her postgraduate residency in General Surgery at <strong class="text-slate-800">Bangalore Medical College and Research Institute (BMCRI)</strong>, one of India's oldest and busiest government medical colleges, between September 2023 and October 2026.
-        </p>
-        <p>
-          Over three years of full-time, on-site surgical training at BMCRI's teaching hospitals, Dr. Pavani Utti has cared for more than 1,000 patients and taken part in over 200 surgeries, working across outpatient clinics, wards, operating theatres and round-the-clock emergency duty.
-        </p>
-        <p>
-          Before her surgical training she earned her MBBS from <strong class="text-slate-800">NTR University of Health Sciences</strong> (2016–2021), where she was awarded the <strong class="text-slate-800">Gold Medal in General Surgery</strong> and the <strong class="text-slate-800">Gold Medal in Obstetrics &amp; Gynaecology</strong>.
-        </p>
-        <p>
-          Beyond clinical work, Dr. Pavani Utti builds free tools for fellow doctors. Her <a href={PROJECTS[0].url} class="text-teal-700 font-medium underline decoration-teal-300 underline-offset-2 hover:text-teal-900">NEET PG Cutoff Explorer</a> and <a href={PROJECTS[1].url} class="text-teal-700 font-medium underline decoration-teal-300 underline-offset-2 hover:text-teal-900">NEET SS Cutoff Explorer</a> turn the official MCC counselling allotment lists into searchable, college-wise closing ranks and rank predictors for postgraduate and super-speciality aspirants across India.
-        </p>
-      </div>
-    </section>
-
-    <!-- Experience Section -->
-    <section id="experience" class="scroll-mt-24 space-y-8">
-      <div class="flex items-center gap-3">
-        <div class="p-2 bg-teal-100 text-teal-700 rounded-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
-        </div>
-        <h2 class="text-2xl font-bold text-slate-900">Experience</h2>
-      </div>
-      
-      <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-200/60 shadow-sm relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-2 h-full bg-teal-500"></div>
-        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-          <div>
-            <h4 class="text-xl font-semibold text-slate-900">General Surgery Resident</h4>
-            <p class="text-slate-700 font-medium mt-1">Bangalore Medical College and Research Institute</p>
-            
-            <div class="flex flex-wrap gap-y-2 gap-x-4 mt-4 text-sm text-slate-500">
-              <div class="flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-                Sep 2023 – Oct 2026 · 3 yrs 2 mos (Completed)
-              </div>
-              <div class="flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                Bengaluru, Karnataka, India
-              </div>
-              <div class="flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase-business"><path d="M12 12h.01"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M22 13a18.15 18.15 0 0 1-20 0"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
-                Full-time · On-site
-              </div>
-            </div>
-          </div>
-          <div class="shrink-0 mt-4 md:mt-0">
-            <img src={asset('/icons/bmcri-logo.png')} alt="Bangalore Medical College and Research Institute (BMCRI) logo" width="112" height="112" loading="lazy" class="w-20 h-20 md:w-28 md:h-28 object-contain mix-blend-multiply opacity-90" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Education Section -->
-    <section id="education" class="scroll-mt-24 space-y-8">
-      <div class="flex items-center gap-3">
-        <div class="p-2 bg-blue-100 text-blue-700 rounded-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-        </div>
-        <h2 class="text-2xl font-bold text-slate-900">Education</h2>
-      </div>
-      
-      <div class="space-y-6">
-        <!-- Education 1 -->
-        <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-200/60 shadow-sm relative overflow-hidden transition-all hover:shadow-md">
-          <div class="flex flex-col md:flex-row md:items-start gap-4">
-            <div class="shrink-0 bg-slate-50/50 p-3 md:p-4 rounded-2xl border border-slate-100/50 mt-2 md:mt-0">
-              <img src={asset('/icons/bmcri-logo.png')} alt="Bangalore Medical College and Research Institute (BMCRI) logo" width="96" height="96" loading="lazy" class="w-20 h-20 md:w-24 md:h-24 object-contain mix-blend-multiply" />
-            </div>
-            <div class="flex-1">
-              <h4 class="text-xl font-semibold text-slate-900">Bangalore Medical College and Research Institute</h4>
-              <p class="text-slate-700 mt-1">Postgraduate Degree, General Surgery Residency Program (Completed)</p>
-              <div class="flex items-center gap-1 mt-3 text-sm text-slate-500 font-medium">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-                Sep 2023 – Oct 2026
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Education 2 -->
-        <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-slate-200/60 shadow-sm relative overflow-hidden transition-all hover:shadow-md">
-          <div class="flex flex-col md:flex-row md:items-start gap-4">
-            <div class="shrink-0 bg-slate-50/50 p-3 md:p-4 rounded-2xl border border-slate-100/50 mt-2 md:mt-0">
-              <img src={asset('/icons/ntr-logo.png')} alt="NTR University of Health Sciences logo" width="96" height="96" loading="lazy" class="w-20 h-20 md:w-24 md:h-24 object-contain mix-blend-multiply" />
-            </div>
-            <div class="flex-1">
-              <h4 class="text-xl font-semibold text-slate-900">NTR University of Health Sciences</h4>
-              <p class="text-slate-700 mt-1">Bachelor of Medicine, Bachelor of Surgery - MBBS, Medicine</p>
-              <div class="flex items-center gap-1 mt-3 text-sm text-slate-500 font-medium">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-                Aug 2016 – Jun 2021
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Honors & Awards Section -->
-    <section id="awards" class="scroll-mt-24 space-y-8">
-      <div class="flex items-center gap-3">
-        <div class="p-2 bg-yellow-100 text-yellow-700 rounded-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
-        </div>
-        <h2 class="text-2xl font-bold text-slate-900">Honors &amp; Awards</h2>
-      </div>
-      
-      <div class="grid md:grid-cols-2 gap-6">
-        <!-- Award 1 -->
-        <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-yellow-200/60 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-          <div class="absolute -right-4 -top-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-500"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
-          </div>
-          <div class="relative z-10 space-y-3">
-            <h4 class="text-lg font-bold text-slate-900">Gold Medal in General Surgery</h4>
-            <div class="flex items-center gap-2 text-sm text-slate-600 font-medium">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-              Mar 2021
-            </div>
-            <p class="text-sm text-slate-500 leading-relaxed pt-2 border-t border-slate-100">
-              Associated with NTR University of Health Sciences
+    <!-- Stats -->
+    <section aria-label="At a glance" class="max-w-6xl mx-auto px-5 md:px-8">
+      <ul class="grid grid-cols-2 lg:grid-cols-4 gap-4" data-stagger="110">
+        {stats.map((s) => (
+          <li data-reveal class="spotlight lift glass rounded-3xl p-6 md:p-7">
+            <span class="grid place-items-center w-11 h-11 rounded-2xl bg-ink text-white">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={icons[s.icon]} /></svg>
+            </span>
+            <p class="mt-6 font-display text-4xl md:text-5xl font-semibold tracking-tight">
+              {s.count !== undefined ? <><span data-count={s.count}>{s.count.toLocaleString('en-IN')}</span><span class="text-teal-600">{s.suffix}</span></> : s.text}
             </p>
-          </div>
-        </div>
-
-        <!-- Award 2 -->
-        <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-yellow-200/60 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
-          <div class="absolute -right-4 -top-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-500"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
-          </div>
-          <div class="relative z-10 space-y-3">
-            <h4 class="text-lg font-bold text-slate-900">Gold Medal in Obstetrics & Gynaecology</h4>
-            <div class="flex items-center gap-2 text-sm text-slate-600 font-medium">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-              Mar 2021
-            </div>
-            <p class="text-sm text-slate-500 leading-relaxed pt-2 border-t border-slate-100">
-              Associated with NTR University of Health Sciences
-            </p>
-          </div>
-        </div>
-      </div>
+            <p class="mt-1 text-sm font-medium text-ink/55">{s.label}</p>
+          </li>
+        ))}
+      </ul>
     </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="scroll-mt-24 space-y-8">
-      <div class="flex items-center gap-3">
-        <div class="p-2 bg-indigo-100 text-indigo-700 rounded-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-column"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-        </div>
-        <h2 class="text-2xl font-bold text-slate-900">Projects</h2>
+    <!-- Marquee -->
+    <div class="marquee mt-20 md:mt-28 overflow-hidden border-y border-ink/10 bg-white/40 py-5" aria-hidden="true">
+      <div class="marquee-track flex w-max gap-10">
+        {[...focus, ...focus].map((f) => (
+          <span class="flex items-center gap-10 font-display text-2xl md:text-3xl italic text-ink/70 whitespace-nowrap">
+            {f}
+            <svg width="18" height="18" viewBox="0 0 24 24" class="text-teal-500" fill="currentColor"><Fragment set:html={icons.cross} /></svg>
+          </span>
+        ))}
       </div>
-      <p class="text-slate-600 leading-relaxed">
-        Free tools by Dr. Pavani Utti that help medical graduates and residents plan NEET PG and NEET SS counselling with real allotment data.
-      </p>
+    </div>
 
-      <div class="grid md:grid-cols-2 gap-6">
-        {PROJECTS.map((p) => (
-          <a href={p.url} class="block bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-indigo-200/60 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all group">
-            <div class="space-y-3">
-              <h3 class="text-lg font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">{p.name} →</h3>
-              <p class="text-sm text-slate-600 leading-relaxed">{p.description}</p>
-              <ul class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
-                {p.keywords.map((k) => (
-                  <li class="text-xs font-medium text-indigo-700 bg-indigo-50 rounded-full px-2.5 py-1">{k}</li>
+    <div class="max-w-6xl mx-auto px-5 md:px-8 space-y-28 md:space-y-36 py-24 md:py-32">
+      <!-- Biography -->
+      <section id="bio" class="scroll-mt-28 grid md:grid-cols-[0.9fr_1.1fr] gap-10 md:gap-16">
+        <div data-reveal="left" class="md:sticky md:top-28 self-start">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">01 · Biography</p>
+          <h2 class="mt-4 font-display text-4xl md:text-5xl font-semibold tracking-tight leading-[1.05]">About Dr. Pavani Utti</h2>
+          <blockquote class="mt-8 border-l-2 border-teal-500 pl-5 font-display italic text-2xl leading-snug text-ink/75">
+            “Compassionate patient care, surgical excellence, and continuous medical learning.”
+          </blockquote>
+        </div>
+        <div class="space-y-5 text-lg leading-relaxed text-ink/70" data-stagger="120">
+          <p data-reveal>
+            <strong class="text-ink">Dr. Pavani Utti</strong> is a General Surgeon based in Bengaluru, Karnataka. She completed her postgraduate residency in General Surgery at <strong class="text-ink">Bangalore Medical College and Research Institute (BMCRI)</strong>, one of India's oldest and busiest government medical colleges, between September 2023 and October 2026.
+          </p>
+          <p data-reveal>
+            Over three years of full-time, on-site surgical training at BMCRI's teaching hospitals, Dr. Pavani Utti has cared for more than 1,000 patients and taken part in over 200 surgeries, working across outpatient clinics, wards, operating theatres and round-the-clock emergency duty.
+          </p>
+          <p data-reveal>
+            Before her surgical training she earned her MBBS from <strong class="text-ink">NTR University of Health Sciences</strong> (2016–2021), where she was awarded the <strong class="text-ink">Gold Medal in General Surgery</strong> and the <strong class="text-ink">Gold Medal in Obstetrics &amp; Gynaecology</strong>.
+          </p>
+          <p data-reveal>
+            Beyond clinical work, Dr. Pavani Utti builds free tools for fellow doctors. Her <a href={PROJECTS[0].url} class="font-medium text-teal-700 underline decoration-teal-300 decoration-2 underline-offset-4 hover:decoration-teal-600">NEET PG Cutoff Explorer</a> and <a href={PROJECTS[1].url} class="font-medium text-teal-700 underline decoration-teal-300 decoration-2 underline-offset-4 hover:decoration-teal-600">NEET SS Cutoff Explorer</a> turn the official MCC counselling allotment lists into searchable, college-wise closing ranks and rank predictors for postgraduate and super-speciality aspirants across India.
+          </p>
+        </div>
+      </section>
+
+      <!-- Journey: experience + education timeline -->
+      <section id="journey" class="scroll-mt-28">
+        <div data-reveal class="max-w-2xl">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">02 · Journey</p>
+          <h2 class="mt-4 font-display text-4xl md:text-5xl font-semibold tracking-tight">Experience &amp; Education</h2>
+        </div>
+        <ol class="relative mt-14 md:mt-16 space-y-8 md:space-y-10 pl-10 md:pl-14" data-timeline>
+          <span class="absolute left-[11px] md:left-[19px] top-2 bottom-2 w-[2px] rounded bg-ink/10" aria-hidden="true">
+            <span class="timeline-fill absolute inset-0 rounded bg-gradient-to-b from-teal-500 via-sky-cap to-gold"></span>
+          </span>
+          {journey.map((j) => (
+            <li id={j.id} class="relative scroll-mt-28" data-reveal="right">
+              <span class="timeline-node absolute -left-10 md:-left-14 top-7 ml-[4px] md:ml-[12px] w-4 h-4 rounded-full border-[3px] border-cream bg-ink/20 scale-75" aria-hidden="true"></span>
+              <article class="spotlight lift glass rounded-3xl p-6 md:p-8 flex flex-col md:flex-row md:items-start gap-6">
+                <div class="flex-1">
+                  <div class="flex flex-wrap items-center gap-3 text-sm">
+                    <span class="rounded-full bg-ink text-white px-3 py-1 text-xs font-semibold uppercase tracking-wider">{j.kind}</span>
+                    <span class="inline-flex items-center gap-1.5 font-medium text-ink/55">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={icons.calendar} /></svg>
+                      {j.when}
+                    </span>
+                  </div>
+                  <h3 class="mt-4 font-display text-2xl md:text-3xl font-semibold tracking-tight">{j.title}</h3>
+                  <p class="mt-1 font-medium text-teal-700">{j.org}</p>
+                  <p class="mt-3 text-ink/65 leading-relaxed">{j.detail}</p>
+                  {j.meta.length > 0 && (
+                    <ul class="mt-5 flex flex-wrap gap-2 text-sm text-ink/60">
+                      {j.meta.map((m) => <li class="rounded-full border border-ink/10 bg-white/70 px-3 py-1">{m}</li>)}
+                    </ul>
+                  )}
+                </div>
+                {j.logo ? (
+                  <img src={asset(j.logo.src)} alt={j.logo.alt} width="104" height="104" loading="lazy" class="shrink-0 w-20 h-20 md:w-[104px] md:h-[104px] object-contain mix-blend-multiply" />
+                ) : (
+                  <span class="medal relative shrink-0 grid place-items-center w-20 h-20 rounded-full font-display text-2xl font-bold text-amber-900">2×</span>
+                )}
+              </article>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <!-- Honors & Awards -->
+      <section id="awards" class="scroll-mt-28">
+        <div data-reveal class="max-w-2xl">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">03 · Recognition</p>
+          <h2 class="mt-4 font-display text-4xl md:text-5xl font-semibold tracking-tight">Honors &amp; Awards</h2>
+        </div>
+        <div class="mt-14 grid md:grid-cols-2 gap-6" data-stagger="140">
+          {awards.map((a) => (
+            <article data-reveal="scale" class="group spotlight lift relative overflow-hidden rounded-3xl bg-ink text-white p-8 md:p-10">
+              <div class="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-gold/20 blur-3xl transition-transform duration-700 group-hover:scale-125" aria-hidden="true"></div>
+              <div class="relative flex items-start gap-6">
+                <div class="relative shrink-0">
+                  <span class="absolute left-1/2 -top-10 -translate-x-1/2 w-8 h-12 bg-gradient-to-b from-teal-500 to-teal-700 [clip-path:polygon(0_0,100%_0,100%_100%,50%_80%,0_100%)]" aria-hidden="true"></span>
+                  <span class="medal relative grid place-items-center w-20 h-20 rounded-full font-display text-xl font-bold text-amber-900">{a.mark}</span>
+                </div>
+                <div>
+                  <h3 class="font-display text-2xl font-semibold leading-tight">{a.title}</h3>
+                  <p class="mt-3 inline-flex items-center gap-1.5 text-sm text-white/60">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={icons.calendar} /></svg>
+                    Mar 2021
+                  </p>
+                  <p class="mt-5 pt-5 border-t border-white/10 text-sm text-white/70">Associated with NTR University of Health Sciences</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- Projects -->
+      <section id="projects" class="scroll-mt-28">
+        <div data-reveal class="max-w-2xl">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">04 · Projects</p>
+          <h2 class="mt-4 font-display text-4xl md:text-5xl font-semibold tracking-tight">Free tools for doctors</h2>
+          <p class="mt-5 text-lg text-ink/65 leading-relaxed">
+            Free tools by Dr. Pavani Utti that help medical graduates and residents plan NEET PG and NEET SS counselling with real allotment data.
+          </p>
+        </div>
+        <div class="mt-14 grid md:grid-cols-2 gap-6" data-stagger="140">
+          {PROJECTS.map((p) => (
+            <a href={p.url} data-reveal class="group spotlight lift glass rounded-3xl p-7 md:p-8 flex flex-col hover:border-teal-500/40">
+              <div class="bars flex items-end gap-1.5 h-24 rounded-2xl bg-gradient-to-br from-teal-50 to-sky-50 p-4" aria-hidden="true">
+                {barHeights.map((h, i) => (
+                  <span class="flex-1 rounded-md bg-gradient-to-t from-teal-600 to-sky-cap" style={`height:${h}%;--i:${i}`}></span>
                 ))}
+              </div>
+              <h3 class="mt-7 font-display text-2xl font-semibold tracking-tight flex items-center justify-between gap-4">
+                {p.name}
+                <span class="grid place-items-center shrink-0 w-10 h-10 rounded-full bg-ink text-white transition-transform duration-500 group-hover:rotate-45">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={icons.arrow} /></svg>
+                </span>
+              </h3>
+              <p class="mt-3 text-ink/65 leading-relaxed flex-1">{p.description}</p>
+              <ul class="mt-6 flex flex-wrap gap-2">
+                {p.keywords.map((k) => <li class="text-xs font-medium text-teal-800 bg-teal-50 rounded-full px-3 py-1">{k}</li>)}
               </ul>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
+            </a>
+          ))}
+        </div>
+      </section>
 
-    <!-- FAQ Section -->
-    <section id="faq" class="scroll-mt-24 space-y-8 pb-12">
-      <h2 class="text-2xl font-bold text-slate-900">Frequently Asked Questions</h2>
-      <div class="space-y-4">
-        {faqs.map((f) => (
-          <details class="bg-white/60 backdrop-blur-sm rounded-2xl p-5 border border-slate-200/60 shadow-sm group" open>
-            <summary class="font-semibold text-slate-900 cursor-pointer list-none flex justify-between items-center gap-4">
-              <h3>{f.q}</h3>
-              <span class="text-teal-600 transition-transform group-open:rotate-45 text-xl leading-none" aria-hidden="true">+</span>
-            </summary>
-            <p class="mt-3 text-slate-600 leading-relaxed">{f.a}</p>
-          </details>
-        ))}
-      </div>
-    </section>
+      <!-- FAQ -->
+      <section id="faq" class="scroll-mt-28 grid md:grid-cols-[0.8fr_1.2fr] gap-10 md:gap-16">
+        <div data-reveal="left" class="md:sticky md:top-28 self-start">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">05 · FAQ</p>
+          <h2 class="mt-4 font-display text-4xl md:text-5xl font-semibold tracking-tight leading-[1.05]">Frequently Asked Questions</h2>
+        </div>
+        <div class="space-y-3" data-stagger="80">
+          {faqs.map((f, i) => (
+            <details class="faq glass rounded-3xl px-6 py-5 transition-colors hover:bg-white/80" data-reveal open={i === 0}>
+              <summary class="cursor-pointer list-none flex items-center justify-between gap-6">
+                <h3 class="font-semibold text-lg">{f.q}</h3>
+                <span class="faq-icon grid place-items-center shrink-0 w-9 h-9 rounded-full bg-teal-50 text-teal-700" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><Fragment set:html={icons.plus} /></svg>
+                </span>
+              </summary>
+              <div class="faq-body">
+                <p class="pt-3 text-ink/65 leading-relaxed">{f.a}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+    </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-white/50 backdrop-blur-md border-t border-slate-200/60 py-8 text-center text-slate-500 text-sm">
-    <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-      <p>&copy; {new Date().getFullYear()} Dr. Pavani Utti · General Surgeon, Bengaluru</p>
-      <nav class="flex flex-wrap justify-center gap-x-5 gap-y-2" aria-label="Links">
-        {PROJECTS.map((p) => (
-          <a href={p.url} class="hover:text-teal-600 font-medium transition-colors">{p.name}</a>
-        ))}
-        <a href={LINKEDIN} target="_blank" rel="noopener noreferrer me" class="hover:text-blue-600 font-medium transition-colors">LinkedIn</a>
-      </nav>
+  <footer class="relative overflow-hidden bg-ink text-white">
+    <div class="absolute -top-32 left-1/4 w-[40rem] h-[40rem] rounded-full bg-teal-500/20 blur-3xl" aria-hidden="true"></div>
+    <div class="relative max-w-6xl mx-auto px-5 md:px-8 pt-24 pb-10">
+      <div data-reveal class="flex flex-col md:flex-row md:items-end md:justify-between gap-10">
+        <h2 class="font-display text-5xl md:text-7xl font-semibold tracking-tight leading-[0.95]">
+          Let's <span class="italic font-normal text-sky-cap">connect.</span>
+        </h2>
+        <a href={LINKEDIN} target="_blank" rel="noopener noreferrer me" data-magnetic class="btn btn-primary self-start md:self-auto inline-flex items-center gap-3 rounded-full bg-white text-ink font-semibold px-7 py-4 hover:shadow-2xl hover:shadow-teal-500/30">
+          <img src={asset('/icons/linkedin-icon.png')} alt="" width="22" height="22" class="w-[22px] h-[22px]" />
+          Dr. Pavani Utti on LinkedIn
+        </a>
+      </div>
+      <div class="mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/55">
+        <p>&copy; {new Date().getFullYear()} Dr. Pavani Utti · General Surgeon, Bengaluru</p>
+        <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2" aria-label="Links">
+          {PROJECTS.map((p) => <a href={p.url} class="hover:text-white transition-colors">{p.name}</a>)}
+          <a href={LINKEDIN} target="_blank" rel="noopener noreferrer me" class="hover:text-white transition-colors">LinkedIn</a>
+        </nav>
+      </div>
     </div>
   </footer>
 </Layout>

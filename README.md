@@ -28,3 +28,11 @@ Google reads the site name, favicon and `robots.txt` only from the domain root
 (`https://dr-pavani-utti.github.io/`). While the site lives at `/portfolio/`, search results show
 “GitHub Pages” and a globe icon. Serving it from the root requires the repo to be named
 `dr-pavani-utti.github.io`.
+
+## Design and motion
+
+- `tailwind.config.mjs`: colour tokens (`ink`, `cream`, `sky-cap`, `gold`) and fonts (Inter, Fraunces as `font-display`).
+- `src/styles/global.css`: keyframes and effects (aurora background, hero word rise, ECG trace, reveal, marquee, medals, timeline).
+- `src/scripts/motion.ts`: scroll reveal (`data-reveal`, `data-stagger`), count-up (`data-count`), header progress and active nav,
+  timeline fill (`data-timeline`), FAQ height animation, and pointer effects (`data-tilt`, `.spotlight`, `data-magnetic`).
+  Reveal styles apply only under the `.js` class, and `prefers-reduced-motion` disables the motion.

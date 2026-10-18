@@ -1,4 +1,5 @@
 ---
+import '../styles/global.css';
 import { absolute, asset, SITE_URL } from '../site';
 
 interface Props {
@@ -13,7 +14,7 @@ const ogImage = absolute('/og-image.png');
 ---
 
 <!doctype html>
-<html lang="en-IN" class="scroll-smooth">
+<html lang="en-IN">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -50,49 +51,21 @@ const ogImage = absolute('/og-image.png');
 		<meta name="generator" content={Astro.generator} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Inter:wght@400..700&display=swap" rel="stylesheet">
+		<!-- Reveal-on-scroll styles apply only when JS runs, so content is never hidden without it. -->
+		<script is:inline>document.documentElement.classList.add('js')</script>
 		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 	</head>
-	<body class="text-slate-800 font-sans antialiased selection:bg-teal-200 selection:text-teal-900 relative min-h-screen">
-		<!-- Background Gradient and Elements -->
-		<div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-			<!-- Subtle Medical Elements -->
-			<div class="absolute inset-0 opacity-[0.03] text-emerald-900">
-				<!-- Stethoscope Top Left -->
-				<div class="absolute -top-10 -left-10 w-64 h-64 rotate-12">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-full h-full"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
-				</div>
-				<!-- Heart Pulse Top Right -->
-				<div class="absolute top-20 -right-20 w-80 h-80 -rotate-12">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-full h-full"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-				</div>
-				<!-- Medical Cross Bottom Left -->
-				<div class="absolute bottom-20 -left-20 w-72 h-72 rotate-45">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-full h-full"><path d="M16 3H8v5H3v8h5v5h8v-5h5V8h-5V3z"/></svg>
-				</div>
-				<!-- Syringe Center Right -->
-				<div class="absolute top-[40%] -right-10 w-56 h-56 -rotate-12">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-full h-full"><path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/><path d="m9 11 4 4"/><path d="m5 19-3 3"/><path d="m14 4 6 6"/></svg>
-				</div>
-				<!-- DNA Bottom Right -->
-				<div class="absolute -bottom-10 -right-10 w-64 h-64 rotate-12">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-full h-full"><path d="M2 15c6.667-6 13.333 0 20-6"/><path d="M9 22c1.798-1.998 2.518-3.995 2.808-5.993"/><path d="M15 2c-1.798 1.998-2.518 3.995-2.808 5.993"/><path d="M17 14l-5-5"/><path d="M14 17l-5-5"/></svg>
-				</div>
-				<!-- Heart Pulse Center Left -->
-				<div class="absolute top-[60%] -left-16 w-52 h-52 rotate-6">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-full h-full"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-				</div>
-			</div>
+	<body class="bg-cream text-ink font-sans antialiased selection:bg-sky-cap selection:text-ink relative min-h-screen overflow-x-clip">
+		<div class="aurora" aria-hidden="true">
+			<span class="aurora-blob aurora-a"></span>
+			<span class="aurora-blob aurora-b"></span>
+			<span class="aurora-blob aurora-c"></span>
+			<span class="aurora-grain"></span>
 		</div>
-
-		<div class="relative z-0">
-			<slot />
-		</div>
+		<slot />
+		<script>
+			import '../scripts/motion';
+		</script>
 	</body>
 </html>
-
-<style is:global>
-	body {
-		font-family: 'Inter', sans-serif;
-	}
-</style>
